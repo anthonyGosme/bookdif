@@ -5,15 +5,10 @@ import collections
 import glob
 import math
 import numpy as np
-print("oooooo")
+
 books =[]
-#list.append(["1",2])
-#print(list)
-#arr = np.array([[11, 2, 6, 7, 2]])
-#my_array = np.concatenate((arr,[["11", 2, 6, 7, 2]]))
-#print(my_array)
+
 def parsetexte(file):
-  #books.append(['33','ml'])
   f = open(file, "r")
   texte = f.read().lower()
   title = re.search(r'title: (.*)', texte)
@@ -40,9 +35,6 @@ def parsetexte(file):
   scoring =np.add(file, len(sorted_x) / math.sqrt(len(mots)))
   score = "{:.1f}".format(len(sorted_x) /math.sqrt(len(mots)))
   books.append([score,titl,auth,len(sorted_x),len(mots)])
-
- #v  ="{:.2f}".format(2/math.sqrt(3))
-  #print( str(score) + " : "+ str(livre) +" \t " + str(len(sorted_x)) + " mots differents - taille totale " + str(len(mots)) + " mots")
 
 for file in glob.glob("*.*"):
   parsetexte(file)
