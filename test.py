@@ -21,7 +21,7 @@ def parsetexte(file):
   if  author :
     auth = re.sub('[^a-zA-Z]+', ' ', author.group(1))
   titl = re.sub('[^a-zA-Z]+', ' ', title.group(1))
-
+  ponct = len(re.findall('[a-z]\.', texte))
   texte = re.sub('[^a-z]+', ' ', texte)
   mots = texte.split()
   tf = {}
@@ -30,17 +30,17 @@ def parsetexte(file):
       tf[mot]+=1 
     else:
       tf[mot]=1
-  sorted_x =  sorted(tf.items(), key=operator.itemgetter(1))
+
+  sorted_mot =  sorted(tf.items(), key=operator.itemgetter(1))
+ # score = int(10*len(sorted_mot)/math.sqrt(len(mots)))
+  score = int(10*len(sorted_mot)/(math.sqrt(len(mots))+math.sqrt(ponct*7)))
  
-  scoring =np.add(file, len(sorted_x) / math.sqrt(len(mots)))
-  score = "{:.1f}".format(len(sorted_x) /math.sqrt(len(mots)))
-  books.append([score,titl,auth,len(sorted_x),len(mots)])
+  books.append([score,titl,auth,len(sorted_mot),len(mots),ponct])
 
 for file in glob.glob("*.*"):
   parsetexte(file)
-
   books.sort()
-print(books)
+
 for book in books:
   print book
  
