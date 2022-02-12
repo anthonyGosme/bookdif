@@ -31,16 +31,51 @@ def parsetexte(file):
     else:
       tf[mot]=1
 
-  sorted_mot =  sorted(tf.items(), key=operator.itemgetter(1))
+  uniqueWord = sorted(tf.items(), key=operator.itemgetter(1))
  # score = int(10*len(sorted_mot)/math.sqrt(len(mots)))
-  score = int(10*len(sorted_mot)/(math.sqrt(len(mots))+math.sqrt(ponct*7)))
+  score = int(10*len(uniqueWord)/(math.sqrt(len(mots))+math.sqrt(ponct*7)))
  
-  books.append([score,titl,auth,len(sorted_mot),len(mots),ponct])
+  books.append([score,titl,auth,len(uniqueWord),len(mots),ponct])
 
 for file in glob.glob("*.*"):
   parsetexte(file)
   books.sort()
+ 
+ 
+html =  """
+<!doctype html>
+<html lang="en">
+<head><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Score</th>
+      <th scope="col">Book</th>
+      <th scope="col">Author</th>
+      <th scope="col">unique words</th>
+      <th scope="col">total words</th>
+      <th scope="col">total lines</th>
+    </tr>
+   
+   
+"""
 
 for book in books:
   print book
+  html = html +"<tr><td>" +str(book[0])\
+  +"</td><td>"+str(book[1])\
+  +"</td><td>"+str(book[2])\
+  +"</td><td>"+str(book[3])\
+  +"</td><td>"+str(book[4])\
+  +"</td><td>"+str(book[5])
+#+"</td></tr>\n"
  
+
+html = html +  "</tbody></table></body></html>"
+f = open("resut.html", "w")
+f.write(html)
+f.close()
+print (html)
+
