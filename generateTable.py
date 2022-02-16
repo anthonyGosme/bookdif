@@ -1,25 +1,33 @@
 from __future__ import division
 import operator
 import re
-import collections
+import unidecode
 import glob
 import math
-import numpy as np
 
 books =[]
 
 def parsetexte(file):
+  print(file)
   f = open(file, "r")
-  texte = f.read().lower()
+  texte = f.read(1111).lower()
   title = re.search(r'title: (.*)', texte)
   author = re.search(r'author: (.*)', texte)
+  language = re.search(r'language: (.*)', texte)
   if not title :
     print("no title"  + file)
     return
   if not author :
     auth = "none"
-  if  author :
+  else :
     auth = re.sub('[^a-zA-Z]+', ' ', author.group(1))
+  if not language :
+    language = "none"
+  else :
+    language = re.sub('[^a-zA-Z]+', ' ', language.group(1))
+
+
+
   titl = re.sub('[^a-zA-Z]+', ' ', title.group(1))
   ponct = len(re.findall('[a-z]\.', texte))
   texte = re.sub('[^a-z]+', ' ', texte)
@@ -30,17 +38,14 @@ def parsetexte(file):
       tf[mot]+=1 
     else:
       tf[mot]=1
-
   uniqueWord = sorted(tf.items(), key=operator.itemgetter(1))
- # score = int(10*len(sorted_mot)/math.sqrt(len(mots)))
-  score = int(10*len(uniqueWord)/(math.sqrt(len(mots))+math.sqrt(ponct*7)))
- 
-  books.append([score,titl,auth,len(uniqueWord),len(mots),ponct])
+  score = int(10*len(uniqueWord)/(math.sqrt(len(mots))+math.sqrt(ponct*5)))
+  books.append([score,titl,auth,len(uniqueWord),len(mots),ponct,language])
 
-for file in glob.glob("*.*"):
+for file in glob.glob("./txt/*.*"):
+  print("l")
   parsetexte(file)
   books.sort()
- 
  
 html =  """
 <!doctype html>
@@ -57,9 +62,8 @@ html =  """
       <th scope="col">unique words</th>
       <th scope="col">total words</th>
       <th scope="col">total lines</th>
+      <th scope="col">language</th>
     </tr>
-   
-   
 """
 
 for book in books:
@@ -69,13 +73,11 @@ for book in books:
   +"</td><td>"+str(book[2])\
   +"</td><td>"+str(book[3])\
   +"</td><td>"+str(book[4])\
-  +"</td><td>"+str(book[5])
-#+"</td></tr>\n"
+  +"</td><td>"+str(book[5])\
+  +"</td><td>"+str(book[6])
  
-
 html = html +  "</tbody></table></body></html>"
 f = open("resut.html", "w")
 f.write(html)
 f.close()
 print (html)
-
